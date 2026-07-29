@@ -139,6 +139,37 @@ class AppServiceProvider extends ServiceProvider
                             });
                         }
                     </script>
+                    <style>
+                        /* Premium Hover Highlight Effects for Filament Cards/Widgets */
+                        .fi-wi-stats-overview-card,
+                        .fi-wi-widget,
+                        .fi-section,
+                        .fi-ta-ctn {
+                            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                        }
+                        
+                        /* Stats Card Hover Effect */
+                        .fi-wi-stats-overview-card:hover {
+                            transform: translateY(-5px) scale(1.01) !important;
+                            box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.15), 0 10px 15px -5px rgba(0, 0, 0, 0.1) !important;
+                            border-color: rgba(59, 130, 246, 0.4) !important;
+                            background: rgba(30, 41, 59, 0.55) !important;
+                        }
+                        
+                        /* Charts Hover Effect */
+                        .fi-wi-widget:hover {
+                            transform: translateY(-3px) !important;
+                            box-shadow: 0 12px 25px -5px rgba(0, 0, 0, 0.12) !important;
+                            border-color: rgba(99, 102, 241, 0.3) !important;
+                        }
+                        
+                        /* Tables and Form Sections Hover */
+                        .fi-section:hover, 
+                        .fi-ta-ctn:hover {
+                            transform: translateY(-1px) !important;
+                            box-shadow: 0 8px 20px -5px rgba(0, 0, 0, 0.08) !important;
+                        }
+                    </style>
                 '
             );
         } catch (\Throwable $e) {
