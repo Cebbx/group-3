@@ -344,10 +344,13 @@ class VehicleRequestForm
                     ->label('Purpose of Travel')
                     ->options([
                         'Meeting' => 'Meeting',
-                        'Seminar / Workshop / Conference' => 'Seminar / Workshop / Conference',
-                        'Official Business / Site Visit' => 'Official Business / Site Visit',
-                        'Delivery of Supplies / Equipment / Documents' => 'Delivery of Supplies / Equipment / Documents',
-                        'others' => 'Others (Specify)',
+                        'Seminar' => 'Seminar',
+                        'Workshop' => 'Workshop',
+                        'Conference' => 'Conference',
+                        'Official Business' => 'Official Business',
+                        'Site Visit' => 'Site Visit',
+                        'Delivery' => 'Delivery',
+                        'others' => 'Others',
                     ])
                     ->required()
                     ->live()
@@ -356,9 +359,12 @@ class VehicleRequestForm
                         if ($record && $record->purpose) {
                             $options = [
                                 'Meeting',
-                                'Seminar / Workshop / Conference',
-                                'Official Business / Site Visit',
-                                'Delivery of Supplies / Equipment / Documents',
+                                'Seminar',
+                                'Workshop',
+                                'Conference',
+                                'Official Business',
+                                'Site Visit',
+                                'Delivery',
                             ];
                             if (in_array($record->purpose, $options)) {
                                 $set('purpose_select', $record->purpose);
