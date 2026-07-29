@@ -321,7 +321,7 @@ class VehicleRequestForm
                         'Official Business' => 'Official Business',
                         'Site Visit' => 'Site Visit',
                         'Delivery' => 'Delivery',
-                        'others' => 'Others',
+                        'Others' => 'Others',
                     ])
                     ->required()
                     ->live()
@@ -340,12 +340,12 @@ class VehicleRequestForm
                             if (in_array($record->purpose, $options)) {
                                 $set('purpose_select', $record->purpose);
                             } else {
-                                $set('purpose_select', 'others');
+                                $set('purpose_select', 'Others');
                             }
                         }
                     })
                     ->afterStateUpdated(function (callable $set, $state) {
-                        if ($state !== 'others') {
+                        if (strtolower($state ?? '') !== 'others') {
                             $set('purpose', $state);
                         } else {
                             $set('purpose', '');
@@ -355,8 +355,8 @@ class VehicleRequestForm
                 TextInput::make('purpose')
                     ->label('Specify Purpose')
                     ->placeholder('Type your custom purpose here...')
-                    ->required(fn (callable $get) => $get('purpose_select') === 'others')
-                    ->visible(fn (callable $get) => $get('purpose_select') === 'others')
+                    ->required(fn (callable $get) => strtolower($get('purpose_select') ?? '') === 'others')
+                    ->visible(fn (callable $get) => strtolower($get('purpose_select') ?? '') === 'others')
                     ->maxLength(255),
                 DatePicker::make('date')
                     ->label('Travel Date')
