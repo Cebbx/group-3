@@ -2,6 +2,14 @@
 
 use Illuminate\Support\Facades\Route;
 
+try {
+    \Illuminate\Support\Facades\DB::connection()->getPdo();
+} catch (\Throwable $e) {
+    Route::get('/', function () use ($e) {
+        return response('<h1>Database Connection Error</h1><p>Please check your credentials in Render Environment variables.</p><pre>' . $e->getMessage() . '</pre>', 500);
+    });
+}
+
 Route::view('/', 'welcome')->name('home');
 
 Route::get('/trip-tickets/{ticket_number}/complete-via-qr', [App\Http\Controllers\QrCodeController::class, 'completeTrip'])->name('trip-tickets.complete-via-qr');
