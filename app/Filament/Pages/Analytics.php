@@ -58,8 +58,11 @@ class Analytics extends BaseDashboard
     public function getWidgets(): array
     {
         return [
-            \App\Filament\Widgets\VehicleUsageChart::class,
+            \App\Filament\Widgets\AnalyticsOverview::class,
             \App\Filament\Widgets\BookingsOverTimeChart::class,
+            \App\Filament\Widgets\VehicleUsageChart::class,
+            \App\Filament\Widgets\DriverUsageChart::class,
+            \App\Filament\Widgets\FuelExpensesChart::class,
         ];
     }
 }

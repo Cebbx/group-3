@@ -65,9 +65,11 @@ class BookingsOverTimeChart extends ChartWidget
                 $queryMonthly->where('status', $filterStatus);
             }
             
-            $monthlyResults = $queryMonthly->groupBy(DB::raw("strftime('%Y-%m', date)"))
-                ->select(DB::raw("strftime('%Y-%m', date) as month"), DB::raw('count(*) as count'))
-                ->pluck('count', 'month')
+            $monthlyResults = $queryMonthly->get()
+                ->groupBy(function ($item) {
+                    return \Carbon\Carbon::parse($item->date)->format('Y-m');
+                })
+                ->map(fn ($group) => $group->count())
                 ->toArray();
                 
             $current = $start->copy()->startOfMonth();
