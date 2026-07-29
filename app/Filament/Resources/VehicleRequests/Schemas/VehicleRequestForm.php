@@ -311,33 +311,47 @@ class VehicleRequestForm
                             }),
                     ])
                     ->columns(2),
-                Select::make('purpose')
+                Select::make('purpose_select')
                     ->label('Purpose of Travel')
-                    ->options(function (?\App\Models\VehicleRequest $record) {
-                        $defaults = [
-                            'Meeting' => 'Meeting',
-                            'Seminar / Workshop / Conference' => 'Seminar / Workshop / Conference',
-                            'Official Business / Site Visit' => 'Official Business / Site Visit',
-                            'Delivery of Supplies / Equipment / Documents' => 'Delivery of Supplies / Equipment / Documents',
-                        ];
-                        // If there is an existing custom value, add it to options so it displays correctly
-                        if ($record && $record->purpose && !isset($defaults[$record->purpose])) {
-                            $defaults[$record->purpose] = $record->purpose;
-                        }
-                        return $defaults;
-                    })
-                    ->searchable()
-                    ->createOptionForm([
-                        TextInput::make('name')
-                            ->label('Custom Purpose')
-                            ->required()
-                            ->maxLength(255),
+                    ->options([
+                        'Meeting' => 'Meeting',
+                        'Seminar / Workshop / Conference' => 'Seminar / Workshop / Conference',
+                        'Official Business / Site Visit' => 'Official Business / Site Visit',
+                        'Delivery of Supplies / Equipment / Documents' => 'Delivery of Supplies / Equipment / Documents',
+                        'others' => 'Others (Specify)',
                     ])
-                    ->createOptionUsing(function (array $data): string {
-                        return $data['name'];
-                    })
                     ->required()
-                    ->placeholder('Select a purpose or click + to add custom...'),
+                    ->live()
+                    ->dehydrated(false)
+                    ->afterStateHydrated(function (Set $set, $state, $record) {
+                        if ($record && $record->purpose) {
+                            $options = [
+                                'Meeting',
+                                'Seminar / Workshop / Conference',
+                                'Official Business / Site Visit',
+                                'Delivery of Supplies / Equipment / Documents',
+                            ];
+                            if (in_array($record->purpose, $options)) {
+                                $set('purpose_select', $record->purpose);
+                            } else {
+                                $set('purpose_select', 'others');
+                            }
+                        }
+                    })
+                    ->afterStateUpdated(function (Set $set, $state) {
+                        if ($state !== 'others') {
+                            $set('purpose', $state);
+                        } else {
+                            $set('purpose', '');
+                        }
+                    }),
+                    
+                TextInput::make('purpose')
+                    ->label('Specify Purpose')
+                    ->placeholder('Type your custom purpose here...')
+                    ->required(fn (Get $get) => $get('purpose_select') === 'others')
+                    ->visible(fn (Get $get) => $get('purpose_select') === 'others')
+                    ->maxLength(255),
                 DatePicker::make('date')
                     ->label('Travel Date')
                     ->default(now())
