@@ -364,7 +364,8 @@ class VehicleRequestForm
                     ])
                     ->required(fn (callable $get) => strtolower($get('purpose_select') ?? '') === 'others')
                     ->visible(fn (callable $get) => strtolower($get('purpose_select') ?? '') === 'others')
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->dehydrated(true),
                 DatePicker::make('date')
                     ->label('Travel Date')
                     ->default(now())
