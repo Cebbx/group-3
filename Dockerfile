@@ -1,6 +1,6 @@
 FROM serversideup/php:8.4-fpm-nginx
 
-# Switch to root to install extensions
+# Switch to root to install extensions and run composer
 USER root
 
 # Download mlocati's PHP extension installer helper (100% pre-compiled, fast, and no compile OOM failures)
@@ -13,11 +13,14 @@ RUN chmod +x /usr/local/bin/install-php-extensions && sync && \
 # Set document root to Laravel public folder
 ENV WEB_DOCUMENT_ROOT=/var/www/html/public
 
-# Copy application files and set ownership to webuser (UID 1000)
-COPY --chown=1000:1000 . /var/www/html
+# Copy application files
+COPY . /var/www/html
 
-# Switch back to webuser (UID 1000)
+# Run composer install as root (avoids cache permission issues) and ignore platform requirements to guarantee success
+RUN composer install --no-dev --optimize-autoloader --no-scripts --ignore-platform-reqs
+
+# Fix ownership of all files to webuser (UID 1000)
+RUN chown -R 1000:1000 /var/www/html
+
+# Switch back to webuser (UID 1000) for running Nginx and PHP-FPM
 USER 1000
-
-# Run composer install to install dependencies without running boot scripts (preventing DB connection failure during build)
-RUN composer install --no-dev --optimize-autoloader --no-scripts
