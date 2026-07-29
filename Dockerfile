@@ -19,5 +19,5 @@ COPY --chown=1000:1000 . /var/www/html
 # Switch back to webuser (UID 1000)
 USER 1000
 
-# Run composer install to install dependencies
-RUN composer install --no-dev --optimize-autoloader
+# Run composer install to install dependencies without running boot scripts (preventing DB connection failure during build)
+RUN composer install --no-dev --optimize-autoloader --no-scripts
