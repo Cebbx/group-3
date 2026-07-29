@@ -341,31 +341,40 @@ class VehicleRequestForm
                                 $set('purpose_select', $record->purpose);
                             } else {
                                 $set('purpose_select', 'Others');
+                                $set('purpose_custom', $record->purpose);
                             }
                         }
                     })
                     ->afterStateUpdated(function (callable $set, $state) {
-                        if (strtolower($state ?? '') !== 'others') {
+                        if ($state !== 'Others') {
                             $set('purpose', $state);
                         } else {
                             $set('purpose', '');
                         }
                     }),
                     
-                TextInput::make('purpose')
+                TextInput::make('purpose_custom')
                     ->label('Specify Purpose')
                     ->placeholder('Type your custom purpose here...')
                     ->rules([
                         fn (callable $get): \Closure => function (string $attribute, $value, \Closure $fail) use ($get) {
-                            if (strtolower($get('purpose_select') ?? '') === 'others' && empty(trim($value ?? ''))) {
+                            if ($get('purpose_select') === 'Others' && empty(trim($value ?? ''))) {
                                 $fail('The Specify Purpose field is required when Others is selected.');
                             }
                         },
                     ])
-                    ->required(fn (callable $get) => strtolower($get('purpose_select') ?? '') === 'others')
-                    ->visible(fn (callable $get) => strtolower($get('purpose_select') ?? '') === 'others')
+                    ->required(fn (callable $get) => $get('purpose_select') === 'Others')
+                    ->visible(fn (callable $get) => $get('purpose_select') === 'Others')
                     ->maxLength(255)
-                    ->dehydrated(true),
+                    ->live(onBlur: true)
+                    ->dehydrated(false)
+                    ->afterStateUpdated(function (callable $set, $state) {
+                        $set('purpose', $state);
+                    }),
+
+                Hidden::make('purpose')
+                    ->dehydrated(true)
+                    ->required(),
                 DatePicker::make('date')
                     ->label('Travel Date')
                     ->default(now())
