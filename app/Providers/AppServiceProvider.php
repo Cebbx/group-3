@@ -23,6 +23,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Auto-migrate and seed database on initial deploy
+        try {
+            if (!\Illuminate\Support\Facades\Schema::hasTable('users')) {
+                \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+                \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
+            }
+        } catch (\Throwable $e) {
+            // Silence database connection errors during initial setup
+        }
+
         // Dynamically override APP_URL and scheme for asset/route generation when accessed via tunnel
         if (isset($_SERVER['HTTP_HOST'])) {
             $proto = 'http';
