@@ -29,7 +29,18 @@ class UserForm
                     ->dehydrated(fn ($state) => filled($state))
                     ->required(fn (string $operation): bool => $operation === 'create')
                     ->maxLength(255)
-                    ->placeholder('Enter password (leave blank to keep current)')
+                    ->placeholder('Enter password')
+                    ->formatStateUsing(function ($state, $record) {
+                        if ($state) return $state;
+                        if (!$record) return 'password';
+                        if ($record->role === 'driver') {
+                            return $record->email;
+                        }
+                        if (str_contains($record->email, '@csu.edu.ph')) {
+                            return explode('@', $record->email)[0];
+                        }
+                        return 'password';
+                    })
                     ->helperText('Default passwords: For department accounts, it is the email prefix (e.g., "records" for records@csu.edu.ph). For default admin/employee, it is "password". For drivers, it is their LTO license number.'),
                     
                 Select::make('role')
