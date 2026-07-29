@@ -343,7 +343,7 @@ class VehicleRequestForm
                 TextInput::make('purpose')
                     ->label('Purpose of Travel')
                     ->placeholder('Select from suggestions or type a custom purpose...')
-                    ->suggestions([
+                    ->datalist([
                         'Meeting',
                         'Seminar / Workshop / Conference',
                         'Official Business / Site Visit',
