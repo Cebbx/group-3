@@ -355,6 +355,13 @@ class VehicleRequestForm
                 TextInput::make('purpose')
                     ->label('Specify Purpose')
                     ->placeholder('Type your custom purpose here...')
+                    ->rules([
+                        fn (callable $get): \Closure => function (string $attribute, $value, \Closure $fail) use ($get) {
+                            if (strtolower($get('purpose_select') ?? '') === 'others' && empty(trim($value ?? ''))) {
+                                $fail('The Specify Purpose field is required when Others is selected.');
+                            }
+                        },
+                    ])
                     ->required(fn (callable $get) => strtolower($get('purpose_select') ?? '') === 'others')
                     ->visible(fn (callable $get) => strtolower($get('purpose_select') ?? '') === 'others')
                     ->maxLength(255),
