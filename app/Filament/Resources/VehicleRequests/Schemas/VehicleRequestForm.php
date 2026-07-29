@@ -326,7 +326,7 @@ class VehicleRequestForm
                     ->required()
                     ->live()
                     ->dehydrated(false)
-                    ->afterStateHydrated(function (Set $set, $state, $record) {
+                    ->afterStateHydrated(function (callable $set, $state, $record) {
                         if ($record && $record->purpose) {
                             $options = [
                                 'Meeting',
@@ -344,7 +344,7 @@ class VehicleRequestForm
                             }
                         }
                     })
-                    ->afterStateUpdated(function (Set $set, $state) {
+                    ->afterStateUpdated(function (callable $set, $state) {
                         if ($state !== 'others') {
                             $set('purpose', $state);
                         } else {
@@ -355,8 +355,8 @@ class VehicleRequestForm
                 TextInput::make('purpose')
                     ->label('Specify Purpose')
                     ->placeholder('Type your custom purpose here...')
-                    ->required(fn (Get $get) => $get('purpose_select') === 'others')
-                    ->visible(fn (Get $get) => $get('purpose_select') === 'others')
+                    ->required(fn (callable $get) => $get('purpose_select') === 'others')
+                    ->visible(fn (callable $get) => $get('purpose_select') === 'others')
                     ->maxLength(255),
                 DatePicker::make('date')
                     ->label('Travel Date')
