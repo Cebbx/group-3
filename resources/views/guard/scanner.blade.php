@@ -314,6 +314,32 @@
             }
  
             function initScanner() {
+                // Check for secure origin
+                const isSecureOrigin = window.location.protocol === 'https:' || 
+                                       window.location.hostname === 'localhost' || 
+                                       window.location.hostname === '127.0.0.1';
+                
+                if (!isSecureOrigin) {
+                    placeholder.innerHTML = `
+                        <div class="w-12 h-12 bg-red-500/10 text-red-400 rounded-2xl flex items-center justify-center mb-3 shadow-[0_0_20px_rgba(239,68,68,0.1)]">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                        </div>
+                        <p class="text-xs font-bold text-white mb-1">Browser Blocked Camera (HTTP Origin)</p>
+                        <p class="text-[10px] text-slate-400 mb-4 max-w-[220px] leading-relaxed">Chrome blocks camera access on custom domains like <b>group-3.test</b> over HTTP. Please use one of the options below:</p>
+                        <div class="flex flex-col gap-2 w-full">
+                            <a href="http://127.0.0.1/guard/scanner" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-xl text-[9px] uppercase tracking-wider transition-all text-center">
+                                Option A: Open via IP (127.0.0.1)
+                            </a>
+                            <button onclick="navigator.clipboard.writeText('https://' + window.location.hostname + '/guard/scanner'); alert('Secure link copied to clipboard!');" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-2 rounded-xl text-[9px] uppercase tracking-wider transition-all">
+                                Option B: Run 'herd secure' & use HTTPS
+                            </button>
+                        </div>
+                    `;
+                    placeholder.classList.remove('hidden');
+                    showError("HTTP Blocked: Use 127.0.0.1 or HTTPS");
+                    return;
+                }
+
                 placeholder.classList.add('hidden');
                 laser.classList.remove('hidden');
                 
