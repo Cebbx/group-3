@@ -18,6 +18,10 @@ class TripTicketsTable
                     ->searchable()
                     ->sortable()
                     ->weight('bold'),
+                TextColumn::make('vehicleRequest.employee_name')
+                    ->label('Requested By / Passenger')
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('vehicleRequest.destination')
                     ->label('Destination')
                     ->searchable()

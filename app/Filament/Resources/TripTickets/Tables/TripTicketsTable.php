@@ -20,6 +20,14 @@ class TripTicketsTable
                 TextColumn::make('vehicleRequest.request_number')
                     ->label('Request Number')
                     ->searchable(),
+                TextColumn::make('vehicleRequest.employee_name')
+                    ->label('Requested By')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('vehicleRequest.destination')
+                    ->label('Destination')
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('driver.name')
                     ->searchable(),
                 TextColumn::make('vehicle')
