@@ -340,17 +340,33 @@ class VehicleRequestForm
                             }),
                     ])
                     ->columns(2),
-                TextInput::make('purpose')
+                Select::make('purpose')
                     ->label('Purpose of Travel')
-                    ->placeholder('Select from suggestions or type a custom purpose...')
-                    ->datalist([
-                        'Meeting',
-                        'Seminar / Workshop / Conference',
-                        'Official Business / Site Visit',
-                        'Delivery of Supplies / Equipment / Documents',
+                    ->options(function (?\App\Models\VehicleRequest $record) {
+                        $defaults = [
+                            'Meeting' => 'Meeting',
+                            'Seminar / Workshop / Conference' => 'Seminar / Workshop / Conference',
+                            'Official Business / Site Visit' => 'Official Business / Site Visit',
+                            'Delivery of Supplies / Equipment / Documents' => 'Delivery of Supplies / Equipment / Documents',
+                        ];
+                        // If there is an existing custom value, add it to options so it displays correctly
+                        if ($record && $record->purpose && !isset($defaults[$record->purpose])) {
+                            $defaults[$record->purpose] = $record->purpose;
+                        }
+                        return $defaults;
+                    })
+                    ->searchable()
+                    ->createOptionForm([
+                        TextInput::make('name')
+                            ->label('Custom Purpose')
+                            ->required()
+                            ->maxLength(255),
                     ])
+                    ->createOptionUsing(function (array $data): string {
+                        return $data['name'];
+                    })
                     ->required()
-                    ->maxLength(255),
+                    ->placeholder('Select a purpose or click + to add custom...'),
                 DatePicker::make('date')
                     ->label('Travel Date')
                     ->default(now())
