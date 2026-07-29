@@ -340,19 +340,17 @@ class VehicleRequestForm
                             }),
                     ])
                     ->columns(2),
-                Select::make('purpose')
+                TextInput::make('purpose')
                     ->label('Purpose of Travel')
-                    ->options([
-                        'Meeting' => 'Meeting',
-                        'Seminar / Workshop / Conference' => 'Seminar / Workshop / Conference',
-                        'Official Business / Site Visit' => 'Official Business / Site Visit',
-                        'Delivery of Supplies / Equipment / Documents' => 'Delivery of Supplies / Equipment / Documents',
+                    ->placeholder('Select from suggestions or type a custom purpose...')
+                    ->suggestions([
+                        'Meeting',
+                        'Seminar / Workshop / Conference',
+                        'Official Business / Site Visit',
+                        'Delivery of Supplies / Equipment / Documents',
                     ])
-                    ->searchable()
-                    ->taggable()
                     ->required()
-                    ->maxLength(255)
-                    ->placeholder('Select or type a custom purpose...'),
+                    ->maxLength(255),
                 DatePicker::make('date')
                     ->label('Travel Date')
                     ->default(now())
