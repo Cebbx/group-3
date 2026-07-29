@@ -1,6 +1,6 @@
 FROM serversideup/php:8.4-fpm-nginx
 
-# Switch to root to install extensions and run composer
+# Switch to root to install extensions and configure files
 USER root
 
 # Download mlocati's PHP extension installer helper (100% pre-compiled, fast, and no compile OOM failures)
@@ -16,11 +16,8 @@ ENV WEB_DOCUMENT_ROOT=/var/www/html/public
 # Copy application files
 COPY . /var/www/html
 
-# Run composer install as root (avoids cache permission issues) and ignore platform requirements to guarantee success
+# Run composer install as root and ignore platform requirements to guarantee build success
 RUN composer install --no-dev --optimize-autoloader --no-scripts --ignore-platform-reqs
 
-# Fix ownership of all files to webuser (UID 1000)
-RUN chown -R 1000:1000 /var/www/html
-
-# Switch back to webuser (UID 1000) for running Nginx and PHP-FPM
-USER 1000
+# Fix ownership of all files to the image's native webuser (UID 9999 / webuser)
+RUN chown -R webuser:webuser /var/www/html
