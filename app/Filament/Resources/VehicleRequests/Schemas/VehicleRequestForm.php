@@ -311,46 +311,19 @@ class VehicleRequestForm
                             }),
                     ])
                     ->columns(2),
-                Select::make('purpose_select')
+                Select::make('purpose')
                     ->label('Purpose of Travel')
                     ->options([
                         'Meeting' => 'Meeting',
                         'Seminar / Workshop / Conference' => 'Seminar / Workshop / Conference',
                         'Official Business / Site Visit' => 'Official Business / Site Visit',
                         'Delivery of Supplies / Equipment / Documents' => 'Delivery of Supplies / Equipment / Documents',
-                        'others' => 'Others (Specify)',
                     ])
+                    ->searchable()
+                    ->taggable()
                     ->required()
-                    ->live()
-                    ->dehydrated(false)
-                    ->afterStateHydrated(function (callable $set, $state, $record) {
-                        if ($record && $record->purpose) {
-                            $options = [
-                                'Meeting',
-                                'Seminar / Workshop / Conference',
-                                'Official Business / Site Visit',
-                                'Delivery of Supplies / Equipment / Documents',
-                            ];
-                            if (in_array($record->purpose, $options)) {
-                                $set('purpose_select', $record->purpose);
-                            } else {
-                                $set('purpose_select', 'others');
-                            }
-                        }
-                    })
-                    ->afterStateUpdated(function (callable $set, $state) {
-                        if ($state !== 'others') {
-                            $set('purpose', $state);
-                        } else {
-                            $set('purpose', '');
-                        }
-                    }),
-                    
-                TextInput::make('purpose')
-                    ->label('Specify Purpose')
-                    ->required()
-                    ->visible(fn (callable $get) => $get('purpose_select') === 'others')
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->placeholder('Select or type a custom purpose...'),
                 DatePicker::make('date')
                     ->label('Travel Date')
                     ->default(now())
