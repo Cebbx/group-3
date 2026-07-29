@@ -19,5 +19,5 @@ COPY . /var/www/html
 # Run composer install as root and ignore platform requirements to guarantee build success
 RUN composer install --no-dev --optimize-autoloader --no-scripts --ignore-platform-reqs
 
-# Fix ownership of all files to the image's native webuser (UID 9999 / webuser)
-RUN chown -R webuser:webuser /var/www/html
+# Make storage and bootstrap cache world-writable to bypass any user ID permission conflicts on Render
+RUN chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache
